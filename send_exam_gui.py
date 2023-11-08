@@ -3,7 +3,10 @@
 import dearpygui.dearpygui as dpg
 from win32api import GetSystemMetrics
 import creator_db as c_db
+import os
+#import updater
 
+os.path.isfile(os.getcwd()+'\\'+'my_db.db')
 
 dpg.create_context()
  
@@ -31,8 +34,6 @@ height=GetSystemMetrics(1)
 print(width, height)
 
 
-list_log=[]
-list_output=[]
 
 def ret_value(sender, data):
     items = dpg.get_item_configuration("lb_2")['items']
@@ -45,10 +46,7 @@ def ret_value(sender, data):
     items.remove(data)
     dpg.configure_item("lb_1", items=items)
 
-    list_log.append(f"Добавлен обьект {data} в lb_2 ")
-    list_log.append(f"Убран обьект {data} из lb_1 ")
-
-    dpg.set_value('log', ''.join(list_log))
+    dpg.set_value('log', f"Добавлен обьект {data} в lb_2 и удалён из lb_1")
 
 def open_file(sender, app_data, user_data):
     #print("Sender: ", sender)
@@ -56,6 +54,13 @@ def open_file(sender, app_data, user_data):
     c_db.read_csv(app_data['selections'][app_data['file_name']])
 
     dpg.set_value('log', 'Данные занесены в БД')
+    if os.path.isfile(os.getcwd()+'\\'+'my_db.db'):
+        dpg.configure_item("open", enabled=False)
+        dpg.configure_item("log", color=(0,255,0))
+        dpg.set_value('log','БД уже создана')
+    else:
+        dpg.configure_item("log", color=(255,0,0))
+        dpg.set_value('log','БД не создана или отсутствует, ...Повторное создание')
     
 dpg.create_viewport(title='Custom Title', 
                     width=int(width/2), 
@@ -91,7 +96,10 @@ with dpg.window(tag="start_window"):
         with dpg.child_window(width=305, pos=[8,360], autosize_y=True):
             dpg.add_text(tag='log',wrap=250)
         with dpg.child_window(width=420, pos=[320,360], autosize_y=True):
-            dpg.add_button(label='Открыть файл',small=True, callback=lambda: dpg.show_item("file_dialog_id"))    
+            with dpg.child_window(width=198, pos=[8,8], autosize_y=True):
+                with dpg.group(horizontal=True):
+                    dpg.add_button(label='Открыть файл', width=94, height=50, tag='open', pos=[1,4],callback=lambda: dpg.show_item("file_dialog_id"))    
+                    dpg.add_button(label='Обновить', tag='update',width=94, height=50)        
         dpg.bind_font(font1)
             
         
