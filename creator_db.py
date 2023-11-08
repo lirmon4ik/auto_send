@@ -10,7 +10,7 @@ def create_db():
     cursor.execute('''
     create table if not exists users(
     id integer primary key autoincrement,
-    id_delo integer default null,
+    id_delo integer default null unique,
     username text not null,
     password text not null,
     firstname text default null,
