@@ -2,6 +2,7 @@
 
 import dearpygui.dearpygui as dpg
 from win32api import GetSystemMetrics
+import creator_db as c_db
 
 
 dpg.create_context()
@@ -48,19 +49,22 @@ def ret_value(sender, data):
     list_log.append(f"Убран обьект {data} из lb_1 ")
 
     dpg.set_value('log', ''.join(list_log))
+
+def open_file(sender, app_data, user_data):
+    #print("Sender: ", sender)
+    c_db.create_db()
+    c_db.read_csv(app_data['selections'][app_data['file_name']])
+
+    dpg.set_value('log', 'Данные занесены в БД')
     
-
-
-
-
 dpg.create_viewport(title='Custom Title', 
                     width=int(width/2), 
                     height=int(height/2),
-                    min_width=int(width/2),
+                    min_width=int(width/2.5),
                     min_height=int(height/2),
                     x_pos=int(width/4),
                     y_pos=int(height/4),
-                    max_width=int(width/2),
+                    max_width=int(width/2.5),
                     max_height=int(height/2))
 
 
@@ -69,19 +73,25 @@ with dpg.window(tag="start_window"):
                         tag='lb_1', 
                         callback=ret_value,
                         width=205,
-                        pos=[535,14],
+                        pos=[535,10],
                         num_items=21
                         )
         dpg.add_listbox(items=[],
                         tag='lb_2',
                         width=205,
-                        pos=[320,14],
+                        pos=[320,10],
                         num_items=21
                         )
-        with dpg.child_window(width=300, pos=[8,10], height=270):
+        with dpg.file_dialog(directory_selector=False, show=False, tag="file_dialog_id", width=700 ,height=400, callback=open_file):
+            dpg.add_file_extension(".csv")
+            
+
+        with dpg.child_window(width=305, pos=[8,10], height=346):
             dpg.add_text(tag='text_output',wrap=1)
-        with dpg.child_window(width=300, pos=[8,290], autosize_y=True):
+        with dpg.child_window(width=305, pos=[8,360], autosize_y=True):
             dpg.add_text(tag='log',wrap=250)
+        with dpg.child_window(width=420, pos=[320,360], autosize_y=True):
+            dpg.add_button(label='Открыть файл',small=True, callback=lambda: dpg.show_item("file_dialog_id"))    
         dpg.bind_font(font1)
             
         

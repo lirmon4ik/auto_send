@@ -36,4 +36,4 @@ def read_csv(file):
         reader=csv.reader(f,delimiter=';',quotechar='"') 
         headers=next(reader)
         update_db(reader)
-        print("Данные занесены в бд")
+        #print("Данные занесены в бд")
