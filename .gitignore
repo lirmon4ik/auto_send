@@ -1,3 +1,4 @@
 *.csv
 *.ini
 *.db
+venv
