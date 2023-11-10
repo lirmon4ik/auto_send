@@ -1,5 +1,4 @@
-import sqlite3
-import csv
+import sqlite3 import csv
 # Сперва вызываем функцию create_db для создания бд
 # Затем вызываем функцию read_csv для заполнения бд
 def create_db():
@@ -17,7 +16,8 @@ def create_db():
     lastname text default null,
     email text default null,
     cohort1 text,
-    department text)
+    department text,
+    number_of_emails_sent int default 0)
     ''')
     connection.commit()
     connection.close()
