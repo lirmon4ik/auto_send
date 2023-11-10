@@ -7,3 +7,4 @@ def get_users():
     users=sorted(users,key=lambda x:(x[2],x[0]))
     users=list(map(lambda x: str(x[2])+" "+x[0]+" "+x[1]+" "+str(x[3]),users))
     connection.close()
+    return users
