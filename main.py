@@ -13,7 +13,7 @@ os.path.isfile(os.getcwd()+'\\'+'my_db.db')
 dpg.create_context()
  
 with dpg.font_registry():
-	with dpg.font("NotoMono-Regular.ttf", 12, default_font=True) as font1:
+	with dpg.font("NotoMono-Regular.ttf", 14, default_font=True) as font1:
 
 		# add the default font range
 		dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
@@ -46,10 +46,7 @@ def add_abit(sender, data):
     items = dpg.get_item_configuration("lb_1")['items']
     items.remove(data)
     dpg.configure_item("lb_1", items=items)
-
-    dpg.configure_item("log", color=(0,255,0))
-    #dpg.set_value('log', f"Добавлен абитуриент: {data} ")
-    dpg.add_text('log',f"Добавлен абитуриент: {data} ")
+    dpg.add_text(f"Добавлен абитуриент: {data} ", parent="text_parent",color=(0,255,0))
 
 def del_abit(sender, data):
     items = dpg.get_item_configuration("lb_1")['items']
@@ -60,17 +57,16 @@ def del_abit(sender, data):
     items = dpg.get_item_configuration("lb_2")['items']
     items.remove(data)
     dpg.configure_item("lb_2", items=items)
-
-    dpg.configure_item("log", color=(255,0,0))
-    dpg.set_value('log', f"Абитуриент удалён: {data} ")
+    dpg.add_text(f"Абитуриент удалён: {data} ",parent='text_parent', color=(255,0,0))
 
 
 def open_file(sender, app_data, user_data):
     #print("Sender: ", sender)
     c_db.create_db()
     c_db.read_csv(app_data['selections'][app_data['file_name']])
-    dpg.configure_item("log", color=(0,255,0))
-    dpg.set_value('log', 'Данные занесены в БД')
+    dpg.configure_item("text_output", color=(0,255,0))
+    dpg.add_text('Данные занесены в БД', parent='text_parent')
+    dpg.configure_item("open", enabled=False)
     
     
     
@@ -103,47 +99,43 @@ with dpg.viewport_menu_bar():
 with dpg.window(tag="start_window"):
         
         with dpg.group(horizontal=True):
-            dpg.add_listbox(items=wwl.get_users(), 
+            dpg.add_listbox(items=['cthytq'],#wwl.get_users(), 
                             tag='lb_1', 
                             callback=add_abit,
                             width=205,
-                            pos=[535,23],
-                            num_items=20
+                            pos=[535,22],
+                            num_items=18
                             )
             dpg.add_listbox(items=[],
                             tag='lb_2',
                             callback=del_abit,
                             width=205,
-                            pos=[320,23],
-                            num_items=20
+                            pos=[320,22],
+                            num_items=18
                             )
         with dpg.file_dialog(directory_selector=False, show=False, tag="file_dialog_id", width=700 ,height=400, callback=open_file):
             dpg.add_file_extension(".csv")
             
-        with dpg.child_window(width=305, pos=[8,23], height=330):
-            dpg.add_text(tag='text_output',wrap=1)
-        with dpg.child_window(width=305, pos=[8,360], autosize_y=True):
-            dpg.add_text(tag='log',wrap=250,color=(0,0,0))
-        with dpg.child_window(width=420, pos=[320,360], autosize_y=True):
+        with dpg.child_window(width=310, pos=[8,22], height=334):
+            pass
+        with dpg.child_window(width=310, pos=[8,358], autosize_y=True,tag="text_parent"):
+            pass
+        with dpg.child_window(width=421, pos=[320,358], autosize_y=True):
             with dpg.child_window(width=198, pos=[8,8], autosize_y=True):
                 with dpg.group(horizontal=True):
-                    dpg.add_button(label='Открыть файл', width=94, height=50, tag='open', pos=[1,4],callback=lambda: dpg.show_item("file_dialog_id"))
+                    dpg.add_button(label='Открыть файл', width=94, height=50, tag='open', pos=[1,4],callback=lambda: dpg.show_item("file_dialog_id"),enabled= not os.path.isfile(os.getcwd()+'\\'+'my_db.db'))
+
                     if os.path.isfile(os.getcwd()+'\\'+'my_db.db'):
-                        dpg.configure_item("open", enabled=False)
-                        dpg.configure_item("log", color=(0,255,0))
-                        dpg.set_value('log','БД уже создана')
+                        
+                        dpg.add_text('БД уже создана',parent='text_parent',color=(0,255,0))
+                        
                     else:
-                        dpg.configure_item("log", color=(255,0,0))
-                        dpg.set_value('log','БД не найдена, ... Выберите файл (.*csv)')
+                        dpg.configure_item("text_parent", color=(255,0,0))
+                        dpg.add_text('БД не найдена, ... Выберите файл (.*csv)',parent='text_parent')
+                        
                         
                         
                     dpg.add_button(label='Обновить', tag='update',width=94, height=50, callback=lambda: update_db(*dpg.get_values(['name','login','pwd'])))
-                    if dpg.get_value('name')=='':
-                        dpg.configure_item("update", enabled=False)
-                        dpg.configure_item("log", color=(255,0,0))
-                        dpg.set_value('log','Нет подключения к БД')
-                    else:
-                        dpg.configure_item("update", enabled=True)
         dpg.bind_font(font1)
                    
     
