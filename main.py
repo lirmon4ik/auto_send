@@ -74,8 +74,8 @@ def send_email():
         dpg.add_text("Нету данных для входа в почту",
                      parent='text_parent', color=(255, 0, 0))
     else:
-        dpg.configure_item("login_email", enabled=False)
-        dpg.configure_item("pwd_email", enabled=False)
+        pass
+        # s_m.send_message_to_users()
 
 
 def update_DB():
@@ -84,6 +84,7 @@ def update_DB():
                      parent='text_parent', color=(255, 0, 0))
     else:
         update_db(*dpg.get_values(['name', 'login', 'pwd']))
+        dpg.configure_item("lb_1", items=wwl.get_users())
 
 
 dpg.create_viewport(title='Custom Title',
@@ -103,12 +104,12 @@ with dpg.viewport_menu_bar():
             dpg.add_input_text(label="Имя пользователя", tag="login")
             dpg.add_input_text(label="Пароль", tag="pwd",
                                password=True, hint="<password>")
-            # dpg.add_input_text(label="База данных",tag="BD")
+
 
 with dpg.window(tag="start_window"):
 
     with dpg.group(horizontal=True):
-        dpg.add_listbox(items=[],  # wwl.get_users(),
+        dpg.add_listbox(items=wwl.get_users(),
                         tag='lb_1',
                         callback=add_abit,
                         width=205,
