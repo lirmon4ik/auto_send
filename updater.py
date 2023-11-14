@@ -1,6 +1,6 @@
 import pyodbc
 import sqlite3
-def update_db(server,database,username,password)
+def update_db(server,database,username,password):
     connectionString = f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}'
     conn = pyodbc.connect(connectionString)
     SQL_QUERY = """

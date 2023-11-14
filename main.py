@@ -58,28 +58,30 @@ def del_abit(sender, data):
     items.remove(data)
     dpg.configure_item("lb_2", items=items)
     dpg.add_text(f"Абитуриент удалён: {data} ",parent='text_parent', color=(255,0,0))
-
-
+    
 def open_file(sender, app_data, user_data):
     #print("Sender: ", sender)
     c_db.create_db()
     c_db.read_csv(app_data['selections'][app_data['file_name']])
-    dpg.configure_item("text_output", color=(0,255,0))
-    dpg.add_text('Данные занесены в БД', parent='text_parent')
+    dpg.add_text('Данные занесены в БД', parent='text_parent',color=(0,255,0))
     dpg.configure_item("open", enabled=False)
     
-    
-    
+def setting_send():
+    if dpg.get_value("login_email") or dpg.get_value("pwd_email") =="":
+        dpg.add_text("Нету данных для входа в почту", parent='text_parent',color=(255,0,0))
+    else:
+        dpg.configure_item("login_email", enabled=False)
+        dpg.configure_item("pwd_email", enabled=False)
+     
 dpg.create_viewport(title='Custom Title', 
                     width=int(width/2), 
                     height=int(height/2),
                     min_width=int(width/2.5),
                     min_height=int(height/2),
-                    x_pos=int(width/4),
+                    x_pos=int(width/3),
                     y_pos=int(height/4),
                     max_width=int(width/2.5),
                     max_height=int(height/2))
-
 
 with dpg.viewport_menu_bar():
     with dpg.menu(label="Settings"):
@@ -89,13 +91,6 @@ with dpg.viewport_menu_bar():
             dpg.add_input_text(label="Пароль",tag="pwd", password=True, hint="<password>")
             #dpg.add_input_text(label="База данных",tag="BD")
             
-                    
-            
-
-
-
-
-
 with dpg.window(tag="start_window"):
         
         with dpg.group(horizontal=True):
@@ -113,29 +108,32 @@ with dpg.window(tag="start_window"):
                             pos=[320,22],
                             num_items=18
                             )
+            
         with dpg.file_dialog(directory_selector=False, show=False, tag="file_dialog_id", width=700 ,height=400, callback=open_file):
             dpg.add_file_extension(".csv")
             
         with dpg.child_window(width=310, pos=[8,22], height=334):
             pass
+        
         with dpg.child_window(width=310, pos=[8,358], autosize_y=True,tag="text_parent"):
             pass
-        with dpg.child_window(width=421, pos=[320,358], autosize_y=True):
-            with dpg.child_window(width=198, pos=[8,8], autosize_y=True):
-                with dpg.group(horizontal=True):
-                    dpg.add_button(label='Открыть файл', width=94, height=50, tag='open', pos=[1,4],callback=lambda: dpg.show_item("file_dialog_id"),enabled= not os.path.isfile(os.getcwd()+'\\'+'my_db.db'))
-
-                    if os.path.isfile(os.getcwd()+'\\'+'my_db.db'):
-                        
-                        dpg.add_text('БД уже создана',parent='text_parent',color=(0,255,0))
-                        
-                    else:
-                        dpg.configure_item("text_parent", color=(255,0,0))
-                        dpg.add_text('БД не найдена, ... Выберите файл (.*csv)',parent='text_parent')
-                        
-                        
-                        
-                    dpg.add_button(label='Обновить', tag='update',width=94, height=50, callback=lambda: update_db(*dpg.get_values(['name','login','pwd'])))
+        
+        with dpg.child_window(width=420, pos=[320,358], autosize_y=True):
+            with dpg.group(horizontal=True):
+                with dpg.child_window(width=198, pos=[8,8], autosize_y=True):
+                    with dpg.group(horizontal=True):
+                        dpg.add_button(label='Открыть файл', width=94, height=50, tag='open', pos=[1,4],callback=lambda: dpg.show_item("file_dialog_id"),enabled= not os.path.isfile(os.getcwd()+'\\'+'my_db.db'))
+                        if os.path.isfile(os.getcwd()+'\\'+'my_db.db'):
+                            dpg.add_text('БД уже создана',parent='text_parent',color=(0,255,0))
+                        else:
+                            dpg.add_text('БД не найдена, ... Выберите файл (.*csv)',parent='text_parent',color=(255,0,0))
+                        dpg.add_button(label='Обновить', tag='update',width=94, height=50, callback=lambda: update_db(*dpg.get_values(['name','login','pwd'])))
+                with dpg.child_window(width=198, autosize_y=True):
+                    with dpg.group():
+                        dpg.add_input_text(label="Логин", tag="login_email",width=128)
+                        dpg.add_input_text(label="Пароль",tag="pwd_email", password=True, hint="<password>")
+                        dpg.add_button(label='Применить', tag="btn_ok", callback=setting_send)
+                    
         dpg.bind_font(font1)
                    
     

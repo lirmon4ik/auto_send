@@ -1,4 +1,5 @@
-import sqlite3 import csv
+import sqlite3 
+import csv
 # Сперва вызываем функцию create_db для создания бд
 # Затем вызываем функцию read_csv для заполнения бд
 def create_db():
