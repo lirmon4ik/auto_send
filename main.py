@@ -8,6 +8,7 @@ import working_with_listbox as wwl
 from updater import update_db
 from sender_message import send_message_to_users
 import save_settings as sett
+import threading
 
 dpg.create_context()
 
@@ -35,9 +36,6 @@ width = GetSystemMetrics(0)
 height = GetSystemMetrics(1)
 
 
-print(width, height)
-
-
 def add_abit(sender, data):
     items = dpg.get_item_configuration("lb_2")['items']
     items.append(data)
@@ -63,7 +61,7 @@ def del_abit(sender, data):
 
 
 def open_file(sender, app_data, user_data):
-    # print("Sender: ", sender)
+
     c_db.create_db()
     c_db.read_csv(app_data['selections'][app_data['file_name']])
     dpg.add_text('Данные занесены в БД',
@@ -75,7 +73,7 @@ def send_email():
     login_email = dpg.get_value("login_email")
     pwd_email = dpg.get_value("pwd_email")
     items = dpg.get_item_configuration("lb_2")['items']
-    print(items)
+
     if not (login_email and pwd_email):
         dpg.add_text("Нету данных для входа в почту",
                      parent='text_parent', color=(255, 0, 0))
@@ -88,7 +86,7 @@ def send_email():
             else:
                 dpg.add_text("Письмо не отправленно " +
                              user[0], parent='text_parent', color=(255, 0, 0))
-        
+
 
 def update_DB():
     if not (dpg.get_value("name") and dpg.get_value("login") and dpg.get_value("pwd")):
@@ -99,10 +97,12 @@ def update_DB():
         dpg.configure_item("lb_1", items=wwl.get_users())
         dpg.add_text("Данные из БД успещно получены",
                      parent='text_parent', color=(0, 255, 0))
-        
+
+
 def save_settings():
     settings.set_mssql(*dpg.get_values(['name', 'login', 'pwd']))
-    settings.set_mail(dpg.get_value("login_email"),dpg.get_value("pwd_email"))
+    settings.set_mail(dpg.get_value("login_email"), dpg.get_value("pwd_email"))
+
 
 dpg.create_viewport(title='Custom Title',
                     width=int(width/2),
@@ -165,17 +165,17 @@ with dpg.window(tag="start_window"):
                         dpg.add_text('БД не найдена, ... Выберите файл (.*csv)',
                                      parent='text_parent', color=(255, 0, 0))
                     dpg.add_button(label='Обновить', tag='update',
-                                   width=94, height=50, callback=lambda: update_DB)
+                                   width=94, height=50, callback=lambda: threading.Thread(target=update_DB).start())
                     dpg.add_button(label='Отправить',
-                                   tag="send_email", pos=[0, 61], width=95, height=50, callback=send_email)
+                                   tag="send_email", pos=[0, 61], width=95, height=50, callback=lambda: threading.Thread(target=send_email).start())
                     dpg.add_button(label='Сохранить \nнастройки',
-                                   tag="sett_save", width=95, height=50,callback=save_settings)
+                                   tag="sett_save", width=95, height=50, callback=save_settings)
             with dpg.child_window(width=198, autosize_y=True):
                 with dpg.group():
                     dpg.add_input_text(
                         label="Логин", tag="login_email", width=128, default_value=settings.get_mail()[0] if settings.is_exist else "")
                     dpg.add_input_text(
-                        label="Пароль", tag="pwd_email", password=True, hint="<password>",default_value=settings.get_mail()[1] if settings.is_exist else "")
+                        label="Пароль", tag="pwd_email", password=True, hint="<password>", default_value=settings.get_mail()[1] if settings.is_exist else "")
 
     dpg.bind_font(font1)
 
