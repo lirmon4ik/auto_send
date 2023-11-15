@@ -168,7 +168,7 @@ with dpg.window(tag="start_window"):
                                    width=94, height=50, callback=lambda: update_DB)
                     dpg.add_button(label='Отправить',
                                    tag="send_email", pos=[0, 61], width=95, height=50, callback=send_email)
-                    dpg.add_button(label='Сохранить настройки',
+                    dpg.add_button(label='Сохранить \nнастройки',
                                    tag="sett_save", width=95, height=50,callback=save_settings)
             with dpg.child_window(width=198, autosize_y=True):
                 with dpg.group():
