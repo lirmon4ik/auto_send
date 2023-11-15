@@ -6,6 +6,7 @@ import creator_db as c_db
 import os
 import working_with_listbox as wwl
 from updater import update_db
+import sender_message as s_m
 
 
 os.path.isfile(os.getcwd()+'\\'+'my_db.db')
@@ -33,7 +34,10 @@ with dpg.font_registry():
 width = GetSystemMetrics(0)
 height = GetSystemMetrics(1)
 
+
+
 print(width, height)
+
 
 
 def add_abit(sender, data):
@@ -70,12 +74,21 @@ def open_file(sender, app_data, user_data):
 
 
 def send_email():
-    if not (dpg.get_value("login_email") and dpg.get_value("pwd_email")):
+    login_email=dpg.get_value("login_email")
+    pwd_email=dpg.get_value("pwd_email")
+    items=dpg.get_item_configuration("lb_2")['items']
+    if not (login_email and pwd_email):
         dpg.add_text("Нету данных для входа в почту",
                      parent='text_parent', color=(255, 0, 0))
-    else:
-        pass
-        # s_m.send_message_to_users()
+    else:        
+        users=s_m.send_message_to_users(items,login_email,pwd_email)
+        for user in users:
+            if user[1]:
+                dpg.add_text("Письмо отправленно "+user[0],parent='text_parent', color=(0,255,0))
+            else:
+                dpg.add_text("Письмо не отправленно "+user[0],parent='text_parent',color=(255,0,0))
+           
+        
 
 
 def update_DB():
@@ -85,6 +98,8 @@ def update_DB():
     else:
         update_db(*dpg.get_values(['name', 'login', 'pwd']))
         dpg.configure_item("lb_1", items=wwl.get_users())
+        dpg.add_text("Данные из БД успещно получены",
+                     parent='text_parent', color=(0, 255, 0))
 
 
 dpg.create_viewport(title='Custom Title',
@@ -92,8 +107,8 @@ dpg.create_viewport(title='Custom Title',
                     height=int(height/2),
                     min_width=int(width/2.5),
                     min_height=int(height/2),
-                    x_pos=int(width/3),
-                    y_pos=int(height/4),
+                    x_pos=int(width/2-width/5),
+                    y_pos=int(height/2-height/3.5),
                     max_width=int(width/2.5),
                     max_height=int(height/2))
 
