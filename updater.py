@@ -1,8 +1,8 @@
-import pyodbc
-import sqlite3
+from pyodbc import connect as mssql
+from sqlite3 import connect as sq3
 def update_db(server,username,password):
     connectionString = f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};UID={username};PWD={password}'
-    conn = pyodbc.connect(connectionString)
+    conn = mssql(connectionString)
     SQL_QUERY = """
         Select distinct А.ID,concat(Имя,' ',Отчество) firstname, Фамилия lastname, E_Mail from Все_Абитуриенты А 
     join Все_Заявления З on А.ID=З.ID and Год_Набора=year(GetDate()) and ВИ_ДО=1 join Специальности С on З.Код_Специальности=С.Код and Уровень in (1,2) ;
@@ -12,7 +12,7 @@ def update_db(server,username,password):
     cur.execute(SQL_QUERY_1)
     data=cur.fetchall()
     conn.close()
-    connection=sqlite3.connect("my_db.db")
+    connection=sq3("my_db.db")
     cursor=connection.cursor()
     for item in data:
         cursor.execute("select count(*) from users where id_delo not null")

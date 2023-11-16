@@ -1,8 +1,8 @@
-import sqlite3
-import os
+from sqlite3 import connect
+from os import listdir
 def get_users():
-    if "my_db.db" in os.listdir():
-        connection=sqlite3.connect("my_db.db")
+    if "my_db.db" in listdir():
+        connection=connect("my_db.db")
         cursor=connection.cursor()
         cursor.execute("select firstname, lastname, number_of_emails_sent, id_delo  from users where id_delo not null")
         users=cursor.fetchall()

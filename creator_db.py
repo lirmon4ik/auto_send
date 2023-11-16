@@ -1,9 +1,9 @@
-import sqlite3 
-import csv
+from sqlite3 import connect
+from csv import reader
 # Сперва вызываем функцию create_db для создания бд
 # Затем вызываем функцию read_csv для заполнения бд
 def create_db():
-    connection=sqlite3.connect("my_db.db")
+    connection=connect("my_db.db")
     cursor=connection.cursor()
     cursor.execute('drop table if exists users')
     connection.commit()
@@ -23,7 +23,7 @@ def create_db():
     connection.commit()
     connection.close()
 def update_db(reader):
-    connection=sqlite3.connect("my_db.db")
+    connection=connect("my_db.db")
     cursor=connection.cursor()
     for row in reader:
         cursor.execute(f'''
@@ -34,7 +34,7 @@ def update_db(reader):
     connection.close()
 def read_csv(file):
     with open(file,encoding='utf-8') as f:
-        reader=csv.reader(f,delimiter=';',quotechar='"') 
-        headers=next(reader)
-        update_db(reader)
+        csv_reader=reader(f,delimiter=';',quotechar='"') 
+        headers=next(csv_reader)
+        update_db(csv_reader)
         #print("Данные занесены в бд")

@@ -1,10 +1,10 @@
-import configparser
-import os
+from configparser import ConfigParser
+from os.path import isfile
 class Settings():
     def __init__(self):
         self.is_exist=True
-        if os.path.isfile('settings.ini'):
-            self.c=configparser.ConfigParser()
+        if isfile('settings.ini'):
+            self.c=ConfigParser()
             self.c.read('settings.ini')
         else:
             self.is_exist=False

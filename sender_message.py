@@ -1,5 +1,5 @@
-import smtplib
-import sqlite3
+from smtplib import SMTP_SSL
+from sqlite3 import connect
 from email.message import EmailMessage
 def send_email(mail_from,mail_to,password,subject, body):
     mail_to = mail_to if type(mail_to) is list else [mail_to]
@@ -8,12 +8,12 @@ def send_email(mail_from,mail_to,password,subject, body):
     msg['To'] = ", ".join(mail_to)
     msg['Subject'] = subject
     msg.set_content(body,subtype='html')
-    server = smtplib.SMTP_SSL('smtp.yandex.ru:465')
+    server = SMTP_SSL('smtp.yandex.ru:465')
     server.login(mail_from,password)
     server.send_message(msg)
     server.quit()
 def send_message_to_users(users,mail_from,password):
-    connection=sqlite3.connect("my_db.db")
+    connection=connect("my_db.db")
     cursor=connection.cursor()
     users_to_send=list()
     users_to_send_complete=list()
