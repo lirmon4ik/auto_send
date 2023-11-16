@@ -5,7 +5,7 @@ def update_db(server,username,password):
     conn = pyodbc.connect(connectionString)
     SQL_QUERY = """
         Select distinct А.ID,concat(Имя,' ',Отчество) firstname, Фамилия lastname, E_Mail from Все_Абитуриенты А 
-    join Все_Заявления З on А.ID=З.ID and Год_Набора=year(GetDate()) and ВИ_ДО=1 ;
+    join Все_Заявления З on А.ID=З.ID and Год_Набора=year(GetDate()) and ВИ_ДО=1 join Специальности С on З.Код_Специальности=С.Код and Уровень in (1,2) ;
         """
     SQL_QUERY_1="""Select distinct id,concat(test_LN,' ',test_SN) firstname, test_FN lastname, e_mail from test_FIO_ABIT;"""
     cur = conn.cursor()

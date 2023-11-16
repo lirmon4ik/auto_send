@@ -112,7 +112,8 @@ dpg.create_viewport(title='Custom Title',
                     x_pos=int(width/2-width/5),
                     y_pos=int(height/2-height/3.5),
                     max_width=int(width/2.5),
-                    max_height=int(height/2))
+                    max_height=int(height/2)
+                    )
 
 with dpg.viewport_menu_bar():
     with dpg.menu(label="Settings"):
