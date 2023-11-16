@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from dearpygui.dearpygui import (get_item_configuration, configure_item, add_text, get_value, get_values, create_context,
-                                 font_registry, font, add_font_range_hint, create_viewport, mvFontRangeHint_Cyrillic, 
-                                 viewport_menu_bar,menu,add_input_text,window,group,add_listbox,file_dialog,
-                                 add_file_extension,child_window,add_button,bind_font,setup_dearpygui,show_viewport,
-                                 set_primary_window,start_dearpygui,destroy_context,show_item)
+                                 font_registry, font, add_font_range_hint, create_viewport, mvFontRangeHint_Cyrillic,
+                                 viewport_menu_bar, menu, add_input_text, window, group, add_listbox, file_dialog,
+                                 add_file_extension, child_window, add_button, bind_font, setup_dearpygui, show_viewport,
+                                 set_primary_window, start_dearpygui, destroy_context, show_item)
 from win32api import GetSystemMetrics
 import creator_db as c_db
 from os.path import isfile
@@ -40,7 +40,7 @@ def del_abit(sender, data):  # функция удаления абитурие�
              parent='text_parent', color=(255, 0, 0))
 
 
-def open_file(sender,app_data,user_data):  # функция открытия csv файла
+def open_file(sender, app_data, user_data):  # функция открытия csv файла
     print(app_data['selections'][app_data['file_name']])
     c_db.create_db()
     c_db.read_csv(app_data['selections'][app_data['file_name']])
@@ -111,30 +111,30 @@ with viewport_menu_bar():  # создаём меню
     with menu(label="Settings"):  # создаём меню настроек
         with menu(label="Подключение к БД"):
             add_input_text(label="Имя Сервера", tag="name", default_value=settings.get_mssql()[
-                               0] if settings.is_exist else "")  # поле ввода имени сервера
+                0] if settings.is_exist else "")  # поле ввода имени сервера
             add_input_text(label="Имя пользователя", tag="login", default_value=settings.get_mssql()[
-                               1] if settings.is_exist else "")  # поле ввода имени пользователя
+                1] if settings.is_exist else "")  # поле ввода имени пользователя
             add_input_text(label="Пароль", tag="pwd",
-                               password=True, hint="<password>", default_value=settings.get_mssql()[2] if settings.is_exist else "")  # поле ввода пароля
+                           password=True, hint="<password>", default_value=settings.get_mssql()[2] if settings.is_exist else "")  # поле ввода пароля
 
 
 with window(tag="start_window"):  # создаём окно
 
     with group(horizontal=True):  # создаём группу
         add_listbox(items=wwl.get_users(),  # создаём основной список абитуриентов
-                        tag='lb_1',
-                        callback=add_abit,
-                        width=205,
-                        pos=[535, 22],
-                        num_items=18
-                        )
+                    tag='lb_1',
+                    callback=add_abit,
+                    width=205,
+                    pos=[535, 22],
+                    num_items=18
+                    )
         add_listbox(items=[],  # создаём второстепенный список абитуриентов
-                        tag='lb_2',
-                        callback=del_abit,
-                        width=205,
-                        pos=[320, 22],
-                        num_items=18
-                        )
+                    tag='lb_2',
+                    callback=del_abit,
+                    width=205,
+                    pos=[320, 22],
+                    num_items=18
+                    )
 
     # создаём окно для выбора файла
     with file_dialog(directory_selector=False, show=False, tag="file_dialog_id", width=700, height=400, callback=open_file):
@@ -160,16 +160,16 @@ with window(tag="start_window"):  # создаём окно
                     # проверяем, есть ли база данных
                     if isfile(getcwd()+'\\'+'my_db.db'):
                         add_text('БД уже создана',
-                                     parent='text_parent', color=(0, 255, 0))
+                                 parent='text_parent', color=(0, 255, 0))
                     else:
                         add_text('БД не найдена, ... Выберите файл (.*csv)',
-                                     parent='text_parent', color=(255, 0, 0))
+                                 parent='text_parent', color=(255, 0, 0))
                     add_button(label='Обновить', tag='update',
-                                   width=94, height=50, callback=lambda: Thread(target=update_DB).start())  # создаём кнопку для обновления данных
+                               width=94, height=50, callback=lambda: Thread(target=update_DB).start())  # создаём кнопку для обновления данных
                     add_button(label='Отправить',
-                                   tag="send_email", pos=[0, 61], width=95, height=50, callback=lambda: Thread(target=send_email).start())  # создаём кнопку для отправки писем
+                               tag="send_email", pos=[0, 61], width=95, height=50, callback=lambda: Thread(target=send_email).start())  # создаём кнопку для отправки писем
                     add_button(label='Сохранить \nнастройки',
-                                   tag="sett_save", width=95, height=50, callback=save_settings)  # создаём кнопку для сохранения настройки
+                               tag="sett_save", width=95, height=50, callback=save_settings)  # создаём кнопку для сохранения настройки
             with child_window(width=198, autosize_y=True):  # создаём дочернее окно
                 with group():  # создаём группу
                     add_input_text(
