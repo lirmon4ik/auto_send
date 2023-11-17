@@ -69,6 +69,7 @@ def send_email():  # функция отправки писем в почту
 
 
 def update_DB():  # функция обновления данных в БД
+    configure_item("lb_2", items=[])
     if not (get_value("name") and get_value("login") and get_value("pwd")):
         add_text("Нету данных для соединения к Базе Данных",
                  parent='text_parent', color=(255, 0, 0))
@@ -96,7 +97,7 @@ width = GetSystemMetrics(0)  # получаем ширину системы
 height = GetSystemMetrics(1)  # получаем высоту системы
 
 
-create_viewport(title='Custom Title',  # заголовок окна
+create_viewport(title='SoE v1.0',  # заголовок окна
                 width=int(width/2),
                 height=int(height/2),
                 min_width=int(width/2.5),
