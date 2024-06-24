@@ -35,7 +35,7 @@ def del_abit(data):  # функция удаления абитуриента и
                  parent='text_parent', color=(255, 0, 0))
 
 
-def open_file(app_data):  # функция открытия csv файла
+def open_file(sender,app_data):  # функция открытия csv файла
 
     c_db.create_db()
     c_db.read_csv(app_data['selections'][app_data['file_name']])
