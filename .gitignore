@@ -5,3 +5,8 @@ venv
 __pycache__
 .vs
 demo.py
+build
+*.rar
+setup.py
+freqData.txt
+setup.py
