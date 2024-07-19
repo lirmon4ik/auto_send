@@ -11,19 +11,23 @@ import save_settings as sett
 import threading
 
 
-def add_abit(data):  # функция добавления абитуриента в список
+def add_abit(sender):  # функция добавления абитуриента в список
+    data=dpg.get_value(sender)
     items = dpg.get_item_configuration("lb_2")['items']
     items.append(data)
+    print(data)
     dpg.configure_item("lb_2", items=items)
 
-    items = dpg.get_item_configuration("lb_1")['items']
+    items=dpg.get_item_configuration("lb_1")['items']
     items.remove(data)
     dpg.configure_item("lb_1", items=items)
     dpg.add_text(f"Добавлен абитуриент: {data} ",
                  parent="text_parent", color=(0, 255, 0))
 
 
-def del_abit(data):  # функция удаления абитуриента из списка
+
+def del_abit(sender):  # функция удаления абитуриента из списка
+    data=dpg.get_value(sender)
     items = dpg.get_item_configuration("lb_1")['items']
     items.append(data)
     dpg.configure_item("lb_1", items=items)
@@ -38,7 +42,7 @@ def del_abit(data):  # функция удаления абитуриента и
 def open_file(sender,app_data):  # функция открытия csv файла
 
     c_db.create_db()
-    c_db.read_csv(app_data['selections'][app_data['file_name']])
+    c_db.read_csv(app_data['file_path_name'])
     dpg.add_text('Данные занесены в БД',
                  parent='text_parent', color=(0, 255, 0))
     dpg.configure_item("open", enabled=False)
@@ -129,14 +133,14 @@ with dpg.viewport_menu_bar():  # создаём меню
 with dpg.window(tag="start_window"):  # создаём окно
 
     with dpg.group(horizontal=True):  # создаём группу
-        dpg.add_listbox(items=wwl.get_users(),  # создаём основной список абитуриентов
+        lb_1=dpg.add_listbox(items=wwl.get_users(),  # создаём основной список абитуриентов
                         tag='lb_1',
                         callback=add_abit,
                         width=205,
                         pos=[535, 22],
                         num_items=18
                         )
-        dpg.add_listbox(items=[],  # создаём второстепенный список абитуриентов
+        lb_2=dpg.add_listbox(items=[],  # создаём второстепенный список абитуриентов
                         tag='lb_2',
                         callback=del_abit,
                         width=205,
